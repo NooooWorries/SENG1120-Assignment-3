@@ -1,0 +1,265 @@
+/*
+ * Name: Zixin Cheng
+ * Course: SENG1120
+ * Student number: 3218124
+*/
+
+namespace czx_project
+{
+	template <typename Item>
+	Tree<Item>::Tree()
+	{
+		rootNode = NULL;  // Set root node to null
+		nodes = 0;            // Set number of nodes to 0
+	}
+	
+	template <typename Item>
+	Tree<Item>::Tree(Node<Item>* data)
+	{
+		rootNode = data;  // Set root node as data provided
+		nodes = 1;			  // Set number of nodes to 1
+	}
+	
+	template <typename Item>
+	Tree<Item>::~Tree()
+	{
+		delete rootNode;    // Delete node
+		rootNode = NULL;  // Set node to null
+	}
+	
+	template <typename Item>
+	int Tree<Item>::compare(const Item* a, const Item* b)
+	{
+		// Compare data
+		if (*a < *b) // a < b
+		    return -1;
+		else if (*a == *b)  // a = b
+		    return 0;
+		else  // a > b
+		    return 1;
+	}
+
+	template <typename Item>
+	void Tree<Item>::insert(Item* data)
+	{
+		// Create new variables
+		Node<Item>* node = new Node<Item>(data);
+		Node<Item>* temp = rootNode;
+		
+		// If root node is null, set root node
+		if (rootNode == NULL)
+		{
+			rootNode = node;
+			nodes ++;
+		}
+		else // If root node is not null
+		{
+			// Find the node based on data provided
+			bool isFound = false;
+			while (isFound != true)
+			{
+				// If not found
+				// Compare the value
+				int compareResult = compare (data, temp -> getData());
+				// If less than parent, put to the left side
+				if (compareResult < 0)
+				{
+					// If node already occupied, replace the value
+					if (temp -> getLeft() != NULL)
+						temp = temp -> getLeft();
+					else  // If node is not beed occupied, add the node
+					{
+						temp -> setLeft(node);
+						temp -> getLeft() -> setParent(temp);
+						isFound = true;
+					}
+				}
+				// If larger than parent, put to the right side
+				else
+				{
+					// If node already occupied, replace the value
+					if (temp -> getRight() != NULL)
+						temp = temp -> getRight();
+					else  // If node is not beed occupied, add the node
+					{
+						temp -> setRight(node);
+						temp -> getRight() -> setParent (temp);
+						isFound = true;
+					}
+				}
+			}
+			nodes ++;
+		}
+	}
+	
+	template <typename Item>
+	void Tree<Item>::inOrder(Node<Item>* node)
+	{
+		// Print in order
+		// Infix
+		if (node != NULL)
+		{
+			inOrder(node->getRight());
+			cout << *node->getData() << " ";		
+			inOrder(node->getLeft());
+		}
+		return;
+	}	
+	
+	template <typename Item>
+	int Tree<Item>::calcNumOfHD(Node<Item>* node)
+	{	
+		int HD = 0;
+		if (node != NULL)
+		{
+			// If grade is larger than 85, HD + 1
+			if ( node -> getData() -> getGrade() >= 85)				
+				HD ++;
+			// Recursion
+			HD += calcNumOfHD(node -> getRight());
+			HD += calcNumOfHD(node -> getLeft());
+		} 
+		return HD;	
+	}
+	
+	template <typename Item>
+	int Tree<Item>::getNumOfHD()
+	{
+		// return the result
+		return calcNumOfHD(rootNode);
+	}
+	
+	template <typename Item>
+	float Tree<Item>::calcTotal(Node<Item>* node)
+	{
+		// Calculate the total mark
+		float total = 0;
+		if (node != NULL)
+		{
+			// Add to the total mark
+			total += node ->getData() -> getGrade();
+			// Recursion
+			total += calcTotal(node -> getRight());
+			total += calcTotal(node -> getLeft());
+		}
+		return total;
+	}
+	
+	template <typename Item>
+	float Tree<Item>::getAverage()
+	{
+		// Calculate average mark and return it back
+		return calcTotal(rootNode) / nodes;
+	}
+	
+	template <typename Item>
+	void Tree<Item>::printInOrder()
+	{
+		// Call inOrder function to print
+		inOrder(rootNode);
+		return;
+	}
+	
+	template <typename Item>
+	Item Tree<Item>::search (const Item target)
+	{
+		// Call find function
+		return find(rootNode, target);
+	}
+	
+	template <typename Item>
+	Item Tree<Item>::find(const Node<Item>* node, const Item target) const
+	{
+		// If tree is blank, return NU''
+		if (node == NULL)
+		{
+			return NULL;
+		}
+		else  // If tree is not blank
+		{
+			// Compare the value
+			int relation = compare(target, node->getData());
+			if (relation == 0) // If equals. return the result
+			{
+				return node->getData();
+			}        
+            else if (relation > 0) // If larger, get the right node and recurse
+			{
+				return find (node->getRight(), target);
+			}    
+            else // If smaller, get the left node and recurse
+			{
+				return find (node->getLeft(), target);
+			}       
+		}
+	}	
+	
+	template <typename Item>
+	void Tree<Item>::deleteFromTree(Node<Item>* node)
+	{
+		// If node has no child
+		if (node -> getLeft() == NULL && node -> getRight() == NULL) 
+        {
+            if (node -> getParent() -> getLeft() == node)
+                node -> getParent() -> setLeft(NULL);
+            else
+                node -> getParent() -> setRight(NULL); 
+            
+			// Delete node
+            node = NULL;
+            delete node;
+        }
+		// If node do not have left child
+        else if (node -> getLeft() == NULL) 
+        {
+            Node<Item>* temp;
+			// Get the leaf node 
+            for (temp = node -> getRight(); temp -> getLeft() != NULL; temp = temp) 
+            {
+                temp = temp -> getLeft();
+            }
+			// swap value
+            node -> setData(temp -> getData()); 
+			// Recursion, call and delete the node
+            deleteFromTree(temp); 
+        }
+        else  // If node do not have right child, or do not have any child
+        {
+            Node<Item>* temp; 
+			// Get the leaf node 
+            for (temp = node -> getLeft(); temp -> getRight() != NULL; temp = temp)
+            {
+                temp = temp -> getRight(); 
+            }
+			// swap value
+            node -> setData(temp -> getData()); 
+			// Recursion, call and delete the node
+            deleteFromTree(temp); 
+        }
+	}
+	
+	template <typename Item>
+	void Tree<Item>::deleteFailStudents(Node<Item>* deleteStudent)
+	{
+		if (deleteStudent != NULL)
+		{	
+			// Postfix recursion
+			deleteFailStudents(deleteStudent -> getRight());
+			deleteFailStudents(deleteStudent -> getLeft());		
+			// If mark is less than 50, delete and nodes - 1
+			if (deleteStudent -> getData() -> getGrade() < 50)
+			{
+				deleteFromTree(deleteStudent);			
+				nodes --;
+			}	
+		}
+		return;
+	}
+	
+	template <typename Item>
+	void Tree<Item>::deleteAllFailStudents()
+	{
+		// Call deleteFailStudents
+		deleteFailStudents(rootNode);
+	}
+}

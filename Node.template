@@ -1,0 +1,105 @@
+/*
+ * Name: Zixin Cheng
+ * Course: SENG1120
+ * Student number: 3218124
+*/
+
+namespace czx_project 
+{
+	// Constructor
+	template <typename Item>
+	Node<Item>::Node()
+	{
+		data = NULL;    // Set data to null
+		left = NULL;    // Set left to null
+		right = NULL;   // Set right to null
+		parent = NULL;  // Set parent to null
+	}
+	
+	// Constructor
+	template <typename Item>
+	Node<Item>::Node(Item* initialData, Node<Item>* initialParent, Node<Item>* initialLeft, Node<Item>* initialRight)
+	{
+		data = initialData;      // Set data to initial value
+		left = initialLeft;      // Set left to initial value 
+		right = initialRight;    // Set right to initial value
+		parent = initialParent;  // Set parent to initial value
+	}
+	
+	// Destructor
+	template <typename Item>
+	Node<Item>::~Node()
+	{
+		delete left;    // Delete left pointer
+		delete right;   // Delete right pointer
+		delete data;    // Delete data pointer
+		parent = NULL;
+
+	}
+	
+	template <typename Item>
+	void Node<Item>::setData(Item* newData)
+	{
+		data = newData;  // Apply new data
+	}
+	
+	template <typename Item>
+	void Node<Item>::setLeft(Node<Item>* newLeft)
+	{
+		left  = newLeft;  // Apply new left pointer
+	}
+	
+	template <typename Item>
+	void Node<Item>::setRight(Node<Item>* newRight)
+	{
+		right = newRight;  // Apply new right pointer
+	}
+	
+	template <typename Item>
+	void Node<Item>::setParent(Node<Item>* newParent)
+	{
+		parent = newParent;  // Apply new parent pointer
+	}
+	
+	template <typename Item>
+	Item* Node<Item>::getData() const
+	{
+		return data;  // return data
+	}
+	
+	template <typename Item>
+	Node<Item>* Node<Item>::getLeft() const
+	{
+		return left;  // return left
+	}
+	
+	template <typename Item>
+	Node<Item>* Node<Item>::getRight() const
+	{
+		return right;  // return right
+	}
+	
+	template <typename Item>
+	Node<Item>* Node<Item>::getParent() const
+	{
+		return parent;  // return parent
+	}
+
+	template <typename Item>
+	Node<Item>* Node<Item>::getLeft()
+	{
+		return left;  // return left
+	}
+	
+	template <typename Item>
+	Node<Item>* Node<Item>::getRight()
+	{
+		return right;  // return right
+	}
+	
+	template <typename Item>
+	Node<Item>* Node<Item>::getParent()
+	{
+		return parent; // return parent
+	}
+}
